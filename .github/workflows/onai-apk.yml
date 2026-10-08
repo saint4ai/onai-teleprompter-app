@@ -26,6 +26,15 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # Подмодуль приходит без тегов, и Flutter не знает свою версию (0.0.0-unknown) —
+      # пакеты не ставятся. Подтягиваем тег, который указывает на закреплённый коммит.
+      - name: Версия Flutter из тега подмодуля
+        run: |
+          sha=$(git -C .flutter rev-parse HEAD)
+          tag=$(git -C .flutter ls-remote --tags origin | grep "^$sha" | grep -v '\^{}' | head -1 | sed 's#.*refs/tags/##')
+          git -C .flutter fetch --depth 1 origin "refs/tags/$tag:refs/tags/$tag"
+          echo "Flutter $tag ($sha)"
+
       - name: Зависимости
         run: |
           .flutter/bin/flutter --disable-analytics

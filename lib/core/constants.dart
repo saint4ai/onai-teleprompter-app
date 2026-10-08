@@ -32,7 +32,11 @@ const String kPrivacyPolicyUrl = "https://tiefprompt.com/policies/privacy/en/";
 const String kLukeChriswalkerUrl = "https://www.lukechriswalker.at";
 const String kDonationUrl = "https://tiefprompt.com/donate";
 
-const String kNewScriptName = "New Script";
+// onAI: приложение для русскоязычных учеников — название нового сценария по-русски.
+const String kNewScriptName = "Новый сценарий";
+
+// onAI: экраны автора оригинала при запуске («Что нового», «Помогите нам») — выключены.
+const bool kOnaiShowUpstreamStartupScreens = false;
 
 const Color kBrandTeal = Color(0xFF1FB6B6);
 const Color kBrandAbyss = Color(0xFF0A1822);

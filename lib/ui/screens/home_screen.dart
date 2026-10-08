@@ -83,6 +83,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _runStartupChecks() async {
     if (!mounted) return;
+    // onAI: ученикам при запуске не показываем журнал изменений TiefPrompt (он на английском)
+    // и просьбу поддержать исходный проект — это экраны автора оригинала, а не наши.
+    if (!kOnaiShowUpstreamStartupScreens) return;
 
     final appState = await ref
         .read(databaseManagersProvider)

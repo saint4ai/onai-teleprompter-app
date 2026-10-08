@@ -1,0 +1,67 @@
+# onAI: веб-версия для iPhone (ставится через Safari «На экран „Домой“»).
+# Собираем на каждый пуш в onai. Публикуем на GitHub Pages, только когда
+# репозиторий открыт: у приватного репозитория на бесплатном тарифе Pages нет.
+name: onAI Web
+
+on:
+  push:
+    branches:
+      - onai
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: onai-web
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Подмодуль Flutter по HTTPS
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Подмодуль приходит без тегов — см. onai-apk.yml.
+      - name: Версия Flutter из тега подмодуля
+        run: |
+          sha=$(git -C .flutter rev-parse HEAD)
+          tag=$(git -C .flutter ls-remote --tags origin | grep "^$sha" | grep -v '\^{}' | head -1 | sed 's#.*refs/tags/##')
+          git -C .flutter fetch --depth 1 origin "refs/tags/$tag:refs/tags/$tag"
+          echo "Flutter $tag ($sha)"
+
+      - name: Зависимости
+        run: |
+          .flutter/bin/flutter --disable-analytics
+          .flutter/bin/flutter pub get
+
+      # Без CDN: CanvasKit и шрифты лежат рядом, приложение не ходит на чужие серверы.
+      - name: Сборка
+        run: |
+          .flutter/bin/flutter build web --release -t lib/main_foss.dart \
+            --no-web-resources-cdn --base-href "/${{ github.event.repository.name }}/"
+          sed -i "s/__BUILD__/${GITHUB_SHA::8}/" build/web/sw.js
+          rm -f build/web/flutter_service_worker.js
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

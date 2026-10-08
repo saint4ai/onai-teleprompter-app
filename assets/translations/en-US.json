@@ -311,5 +311,9 @@
     "Title": "There are no purchases...",
     "Back": "Back",
     "MainBody": "Oh hi! Apparently, you arrived at the purchases screen no one is supposed to see, and which only exists so the build is easier.\n\nWell, see you! Have a nice one!"
+  },
+  "ResetSettings": {
+    "Title": "Couldn't load your settings",
+    "Message": "Reset them to get the teleprompter working again. Your scripts stay."
   }
 }

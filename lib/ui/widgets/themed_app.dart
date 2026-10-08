@@ -51,11 +51,7 @@ class ThemedApp extends ConsumerWidget {
         localizationsDelegates: delegates,
         supportedLocales: supportedLocales,
         locale: locale,
-        home: ResetSettingsScreen(
-          title: "An Exceedingly Scary Error",
-          message: "Something went wrong loading your settings or maybe even the themes ( :c ). Resetting them should get things working again.",
-          error: error,
-        ),
+        home: ResetSettingsScreen(error: error),
       );
     }
 

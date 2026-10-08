@@ -60,11 +60,11 @@ android {
         }
         profile {
             applicationIdSuffix '.profile'
-            manifestPlaceholders += [appLabel: "TiefPrompt Profile"]
+            manifestPlaceholders += [appLabel: "onAI Суфлёр Profile"]
         }
         debug {
             applicationIdSuffix '.debug'
-            manifestPlaceholders += [appLabel: "TiefPrompt Debug"]
+            manifestPlaceholders += [appLabel: "onAI Суфлёр Debug"]
         }
     }
 

@@ -5,21 +5,12 @@ import 'package:tiefprompt/core/constants.dart';
 import 'package:tiefprompt/providers/settings_provider.dart';
 import 'package:tiefprompt/ui/widgets/safe_scaffold.dart';
 
-const _defaultResetTitle = "Something went wrong";
-const _defaultResetMessage =
-    "We couldn't load your settings. Resetting them should get things working again.";
-
 class ResetSettingsView extends ConsumerWidget {
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
   final Object? error;
 
-  const ResetSettingsView({
-    super.key,
-    this.title = _defaultResetTitle,
-    this.message = _defaultResetMessage,
-    this.error,
-  });
+  const ResetSettingsView({super.key, this.title, this.message, this.error});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +33,7 @@ class ResetSettingsView extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  title,
+                  title ?? context.tr("ResetSettings.Title"),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
@@ -50,7 +41,7 @@ class ResetSettingsView extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  message,
+                  message ?? context.tr("ResetSettings.Message"),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium,
                 ),
@@ -90,16 +81,11 @@ class ResetSettingsView extends ConsumerWidget {
 }
 
 class ResetSettingsScreen extends StatelessWidget {
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
   final Object? error;
 
-  const ResetSettingsScreen({
-    super.key,
-    this.title = _defaultResetTitle,
-    this.message = _defaultResetMessage,
-    this.error,
-  });
+  const ResetSettingsScreen({super.key, this.title, this.message, this.error});
 
   @override
   Widget build(BuildContext context) {

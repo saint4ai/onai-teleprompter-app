@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -322,7 +323,12 @@ class _ScrollableTextState extends ConsumerState<ScrollableText>
                       ),
               SizedBox(
                 height: mediaHeight,
-                child: Center(child: Text("The End", style: widget.style)),
+                child: Center(
+                  child: Text(
+                    context.tr("PrompterScreen.TheEnd"),
+                    style: widget.style,
+                  ),
+                ),
               ),
             ],
           ),

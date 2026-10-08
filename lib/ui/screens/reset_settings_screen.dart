@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiefprompt/core/constants.dart';
@@ -76,7 +77,7 @@ class ResetSettingsView extends ConsumerWidget {
                     onPressed: () =>
                         ref.read(settingsProvider.notifier).resetSettings(),
                     icon: const Icon(Icons.restart_alt),
-                    label: const Text("Reset settings"),
+                    label: Text(context.tr("SettingsScreen.ListTile_Reset")),
                   ),
                 ),
               ],

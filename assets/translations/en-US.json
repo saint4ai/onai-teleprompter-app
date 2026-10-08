@@ -124,7 +124,7 @@
       "ChangeBindings": "Change Bindings",
       "AddBinding": "Add Binding",
       "CaptureBindingTitle": "Press a key combination",
-      "CaptureBindingHint": "Hold Ctrl, Alt, Shift, or Meta and press a key.",
+      "CaptureBindingHint": "Press a button on your remote or a key. For a combination, hold Ctrl, Alt, Shift or Meta.",
       "ResetBindings": "Reset all bindings to defaults",
       "playPause": "Play/Pause",
       "scrollUpSmall": "Small Scroll Up",
@@ -141,7 +141,8 @@
       "fontSizeUp": "Increase Font Size",
       "fontSizeDown": "Decrease Font Size",
       "openSettings": "Open Settings",
-      "saveSettingsFromPrompter": "Save Settings from Prompter"
+      "saveSettingsFromPrompter": "Save Settings from Prompter",
+      "NoBinding": "No Binding"
     },
     "SettingsRestore": {
       "Title": "Save and Restore Settings",
@@ -254,7 +255,8 @@
       "IconButton_ShowCurrentChapter": "Show Current Chapter",
       "Slider_SideMargin": "Side Margin",
       "Slider_Countdown": "Countdown"
-    }
+    },
+    "TheEnd": "The End"
   },
   "OpenFileScreen": {
     "title": "Select Script",

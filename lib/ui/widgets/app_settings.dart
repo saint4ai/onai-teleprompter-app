@@ -381,7 +381,10 @@ class _KeybindingAppSettingState
 
   Widget _getBindingsDisplay() {
     if (widget.bindings.isEmpty) {
-      return Text("No Binding", style: TextStyle(fontStyle: FontStyle.italic));
+      return Text(
+        context.tr("SettingsScreen.KeybindingsSettings.NoBinding"),
+        style: TextStyle(fontStyle: FontStyle.italic),
+      );
     }
 
     if (widget.bindings.length == 1) {

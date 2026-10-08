@@ -99,7 +99,7 @@
             "ChangeBindings": "Изменить привязки",
             "AddBinding": "Добавить привязку",
             "CaptureBindingTitle": "Нажмите комбинацию клавиш",
-            "CaptureBindingHint": "Удерживайте Ctrl, Alt, Shift или Meta и нажмите клавишу.",
+            "CaptureBindingHint": "Нажмите кнопку на пульте или клавишу. Для сочетания удерживайте Ctrl, Alt, Shift или Meta.",
             "ResetBindings": "Сбросить все привязки на стандартные",
             "playPause": "Воспроизведение/Пауза",
             "scrollUpSmall": "Маленький скролл вверх",
@@ -116,7 +116,8 @@
             "fontSizeUp": "Увеличить шрифт",
             "fontSizeDown": "Уменьшить шрифт",
             "openSettings": "Открыть настройки",
-            "saveSettingsFromPrompter": "Сохранить настройки из телесуфлёра"
+            "saveSettingsFromPrompter": "Сохранить настройки из телесуфлёра",
+            "NoBinding": "Не назначено"
         },
         "SettingsRestore": {
             "Title": "Сохранить и восстановить настройки",
@@ -209,6 +210,14 @@
                 "SetFontVariantWeight": "Насыщенность",
                 "SetFontItalics": "Курсив"
             }
+        },
+        "ColorAppSetting_Disabled": "Цвет нельзя менять, пока включены системные цвета",
+        "BooleanAppSetting_UseSystemColors": "Системные цвета",
+        "DropdownAppSetting_DefaultTextDirectionMode": "Направление текста по умолчанию",
+        "DropdownAppSetting_DefaultTextDirectionMode_Unit": {
+            "ltr": "Слева направо",
+            "rtl": "Справа налево",
+            "auto": "Автоматически"
         }
     },
     "PrompterScreen": {
@@ -242,7 +251,8 @@
             "Slider_SideMargin": "Боковое поле",
             "Slider_Countdown": "Обратный отсчёт",
             "IconButton_ShowCurrentChapter": "Показать текущую главу"
-        }
+        },
+        "TheEnd": "Конец"
     },
     "OpenFileScreen": {
         "title": "Выбрать скрипт",

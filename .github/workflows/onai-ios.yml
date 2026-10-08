@@ -1,6 +1,6 @@
-# onAI: родное приложение для iPhone. Пока без подписи — проверяем, что проект
-# собирается под iOS. Подпись и отправка в TestFlight добавятся, когда появится
-# аккаунт Apple Developer (ключ App Store Connect — в секретах репозитория).
+# onAI: родное приложение для iPhone — IPA без подписи. Его подписывает и ставит
+# сам владелец телефона своим бесплатным Apple ID (Sideloadly или SideStore),
+# платный аккаунт Apple Developer не нужен. Инструкция — README, раздел про iPhone.
 name: onAI iOS
 
 on:
@@ -42,3 +42,16 @@ jobs:
           app=build/ios/iphoneos/Runner.app
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleDisplayName" -c "Print :CFBundleShortVersionString" "$app/Info.plist"
           du -sh "$app"
+
+      - name: IPA без подписи
+        run: |
+          mkdir -p ipa/Payload
+          cp -R build/ios/iphoneos/Runner.app ipa/Payload/
+          (cd ipa && zip -qry ../onai-suflyor-ios.ipa Payload)
+          ls -l onai-suflyor-ios.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onai-suflyor-ios
+          path: onai-suflyor-ios.ipa
+          retention-days: 14

@@ -1,7 +1,7 @@
 {
-    "title": "TiefPrompt",
+    "title": "onAI Суфлёр",
     "empty_title": "Безымянный скрипт",
-    "copyright": "Авторское право © 2025 Lena Tauchner\nВсе права защищены.\n\nПроект лицензирован по лицензии MIT. Подробности в файле LICENSE.\n",
+    "copyright": "onAI Суфлёр — доработка TiefPrompt для onAI Academy.\n\nАвторское право © 2025 Lena Tauchner\nВсе права защищены.\n\nПроект лицензирован по лицензии MIT. Подробности в файле LICENSE.\n",
     "credits": "Благодарим за переводы софта!\nКитайский: @TaoEngine\nРусский: @Xapitonov\nАрабский: @shadigaafar",
     "ProFeatureDisabled": "Эта функция доступна только в Pro-версии.",
     "AboutDialog": {

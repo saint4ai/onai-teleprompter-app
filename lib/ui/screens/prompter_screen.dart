@@ -48,6 +48,7 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
 
   // onAI: быстрая прокрутка, пока держат стрелку вверх/вниз.
   late final Ticker _holdTicker;
+  late final AppLifecycleListener _lifecycleListener;
   LogicalKeyboardKey? _holdKey;
   int _holdDirection = 0;
   Duration _lastHoldElapsed = Duration.zero;
@@ -57,6 +58,17 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
     super.initState();
     _scrollableTextController = ScrollableTextController();
     _holdTicker = createTicker(_onHoldTick);
+    // Приложение ушло в фон — отпускания кнопки можем не получить, удержание снимаем сразу.
+    _lifecycleListener = AppLifecycleListener(
+      onStateChange: (state) {
+        if (state != AppLifecycleState.resumed) {
+          _stopHold();
+        }
+      },
+    );
+    // Привязки грузятся из базы асинхронно — начинаем заранее, чтобы первое нажатие
+    // на пульте не потерялось.
+    ref.read(keybindingsProvider);
     _scrollableTextControllerSaveDebouncer = PeriodicRunDebouncer(
       delay: Duration(seconds: 1),
       periodicDelay: Duration(seconds: 5),
@@ -103,6 +115,12 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
 
     return Focus(
       onKeyEvent: _onKeyEvent,
+      // Фокус ушёл (открыли настройки) — отпускания кнопки здесь не будет.
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          _stopHold();
+        }
+      },
       focusNode: _focusNode,
       autofocus: true,
       child: Scaffold(
@@ -174,6 +192,7 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
       overlays: SystemUiOverlay.values,
     );
     WakelockPlus.disable();
+    _lifecycleListener.dispose();
     _holdTicker.dispose();
     _focusNode.dispose();
     _scrollableTextController.dispose();
@@ -185,12 +204,9 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
   // стрелками и не нажимает кнопки панели. Клик ↑/↓ сдвигает текст сразу,
   // удержание включает быструю прокрутку, отпускание возвращает обычный показ.
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is KeyUpEvent) {
-      if (event.logicalKey == _holdKey) {
-        _stopHold();
-        return KeyEventResult.handled;
-      }
-      return KeyEventResult.ignored;
+    if (event is KeyUpEvent && event.logicalKey == _holdKey) {
+      _stopHold();
+      return KeyEventResult.handled;
     }
 
     final actions = ref
@@ -198,6 +214,12 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
         .actionsForEvent(event);
     if (actions.isEmpty) {
       return KeyEventResult.ignored;
+    }
+
+    // Отпускание назначенной клавиши обрабатываем так же, как нажатие, — иначе
+    // система получает «отпускание» без «нажатия».
+    if (event is KeyUpEvent) {
+      return KeyEventResult.handled;
     }
 
     // Автоповтор при удержании не повторяет действие: прокрутку ведёт таймер удержания,
@@ -243,6 +265,13 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
   }
 
   void _onHoldTick(Duration elapsed) {
+    final holdKey = _holdKey;
+    if (holdKey == null ||
+        !HardwareKeyboard.instance.logicalKeysPressed.contains(holdKey)) {
+      _stopHold();
+      return;
+    }
+
     final linesPerSecond = holdScrollLinesPerSecond(elapsed);
     final deltaSeconds =
         (elapsed - _lastHoldElapsed).inMicroseconds /

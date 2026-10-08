@@ -19,6 +19,20 @@
 
 Получилось, если суфлёр открылся без адресной строки. После первого запуска он работает и без интернета.
 
+### iPhone: приложение через IPA
+
+Если нужен суфлёр отдельным приложением, а не через Safari, поставьте его своим обычным Apple ID. Платный аккаунт разработчика не нужен, но нужен компьютер (Mac или Windows) и кабель.
+
+1. Скачайте на компьютер [onai-suflyor-ios.ipa](https://github.com/saint4ai/onai-teleprompter-app/releases/latest/download/onai-suflyor-ios.ipa).
+2. Установите [Sideloadly](https://sideloadly.io) и подключите iPhone кабелем.
+3. Перетащите IPA в Sideloadly, введите Apple ID и нажмите Start. Пароль вводится в стороннюю программу — надёжнее завести для этого отдельный Apple ID.
+4. На iPhone: «Настройки» → «Конфиденциальность и безопасность» → «Режим разработчика» → включить. iPhone перезагрузится.
+5. «Настройки» → «Основные» → «VPN и управление устройством» → ваш Apple ID → «Доверять».
+
+Получилось, если «onAI Суфлёр» открывается с иконки.
+
+Ограничения Apple для бесплатного Apple ID: подпись действует 7 дней, потом приложение нужно переподписать, и таких приложений не больше трёх. Sideloadly переподписывает сам, если включить в нём автообновление, а iPhone и компьютер в одной Wi-Fi-сети. Без компьютера каждую неделю — [SideStore](https://sidestore.io): компьютер нужен один раз, дальше он обновляет подпись на самом iPhone и ставит IPA прямо из Safari.
+
 ### Android
 
 1. Скачайте [onai-suflyor-android.apk](https://github.com/saint4ai/onai-teleprompter-app/releases/latest/download/onai-suflyor-android.apk) — последняя версия.
@@ -61,5 +75,5 @@
 - Точка входа — `lib/main_foss.dart`. Flutter закреплён подмодулем `.flutter`.
 - Сборки — GitHub Actions: `onai-apk.yml` собирает APK и гоняет тесты, `onai-web.yml` собирает веб-версию и публикует её на Pages.
 - APK из CI подписан одноразовым ключом. В релиз идёт файл, переподписанный ключом onAI, — иначе обновление не встанет поверх.
-- В каждый релиз загружайте копию APK под именем `onai-suflyor-android.apk`: на неё ведут лендинг onai.academy/suflyor и README.
+- В каждый релиз загружайте копию APK под именем `onai-suflyor-android.apk` и IPA из `onai-ios.yml` как `onai-suflyor-ios.ipa`: на них ведут лендинг onai.academy/suflyor и README.
 - Локально: `.flutter/bin/flutter test`, `.flutter/bin/flutter build web -t lib/main_foss.dart --no-web-resources-cdn`.

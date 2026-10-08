@@ -5,7 +5,7 @@
   "credits": "Thanks to the following contributors for providing translations for the software.\n Chinese: @TaoEngine\n Russian: @Xapitonov\n Arabic: @shadigaafar",
   "ProFeatureDisabled": "This function is only available in the pro version.",
   "AboutDialog": {
-    "Text_PrivacyText": "This application does not collect any personal data. No data is shared with third parties as far as I know. Read more about our privacy policy.",
+    "Text_PrivacyText": "This application does not collect any personal data. Scripts are stored on this device only.",
     "ElevatedButton_Privacy": "Privacy Policy"
   },
   "ChangelogModal": {

@@ -271,7 +271,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 spacing: 8.0,
                 children: [
-                  _BuildVersionNote(),
+                  if (kOnaiShowUpstreamLinks) _BuildVersionNote(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -281,12 +281,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         onPressed: () => context.push("/settings"),
                         tooltip: context.tr("HomeScreen.IconButton_Settings"),
                       ),
-                      IconButton(
-                        key: const Key("HomeScreen.IconButton_SourceCode"),
-                        icon: Icon(Icons.code),
-                        onPressed: () => launchUrlFromString(kRepoUrl),
-                        tooltip: context.tr("HomeScreen.IconButton_SourceCode"),
-                      ),
+                      if (kOnaiShowUpstreamLinks)
+                        IconButton(
+                          key: const Key("HomeScreen.IconButton_SourceCode"),
+                          icon: Icon(Icons.code),
+                          onPressed: () => launchUrlFromString(kRepoUrl),
+                          tooltip: context.tr(
+                            "HomeScreen.IconButton_SourceCode",
+                          ),
+                        ),
                       FutureBuilder(
                         future: packageInfo,
                         builder: (buildContext, packageInfo) => IconButton(
@@ -312,16 +315,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         "AboutDialog.Text_PrivacyText",
                                       ),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () => launchUrlFromString(
-                                        kPrivacyPolicyUrl,
-                                      ),
-                                      child: Text(
-                                        context.tr(
-                                          "AboutDialog.ElevatedButton_Privacy",
+                                    if (kOnaiShowUpstreamLinks)
+                                      ElevatedButton(
+                                        onPressed: () => launchUrlFromString(
+                                          kPrivacyPolicyUrl,
+                                        ),
+                                        child: Text(
+                                          context.tr(
+                                            "AboutDialog.ElevatedButton_Privacy",
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),

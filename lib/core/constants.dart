@@ -38,6 +38,10 @@ const String kNewScriptName = "Новый сценарий";
 // onAI: экраны автора оригинала при запуске («Что нового», «Помогите нам») — выключены.
 const bool kOnaiShowUpstreamStartupScreens = false;
 
+// onAI: на главном экране без кнопок автора оригинала — «Свободное ПО» с просьбой
+// о пожертвованиях, ссылки на его репозиторий и его политику. Лицензия — в «О программе».
+const bool kOnaiShowUpstreamLinks = false;
+
 const Color kBrandTeal = Color(0xFF1FB6B6);
 const Color kBrandAbyss = Color(0xFF0A1822);
 const Color kBrandAbyssSurface = Color(0xFF10222E);

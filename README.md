@@ -1,100 +1,62 @@
-# TiefPrompt
+<img src="web/icons/Icon-192.png" width="96" alt="">
 
-[![](https://dcbadge.limes.pink/api/server/https://discord.gg/EG3zU9cTFx)](https://discord.gg/EG3zU9cTFx)
-[![Weblate project translated](https://img.shields.io/weblate/progress/tiefprompt?style=for-the-badge)](https://hosted.weblate.org/projects/tiefprompt)
+# onAI Суфлёр
 
-An extraordinarily simple cross-platform teleprompter.
+Суфлёр для съёмки с Bluetooth-пультом. Держите стрелку — текст едет быстро, отпустили — идёт дальше в своём темпе.
 
-## Usage
+Без регистрации и рекламы. Сценарии хранятся только в вашем телефоне.
 
-Load a script from a file or paste it into the input box.
+## Установка
 
-Press play to start the teleprompter. Press pause to stop it. Press + to make it faster, - to make it slower. There's also a button to flip it vertically and one to flip it horizontally. Font size can also be adjusted. And so much more!
+### iPhone
 
-**Feature List**
+1. Откройте в **Safari**: https://saint4ai.github.io/onai-teleprompter-app/
+2. Нажмите «Поделиться» — квадрат со стрелкой вверх. В iOS 26 он спрятан в меню «⋯».
+3. Выберите «На экран „Домой“» → «Добавить».
+4. Запускайте суфлёр с иконки на экране «Домой», а не из Safari.
 
-- Play/pause, speed control (0.1x–20x), and a countdown timer before scrolling starts
-- Adjustable font size, font family, text alignment, and Markdown rendering
-- Flip text horizontally or vertically for use with a physical teleprompter
-- Reading indicator box, side margins, and top/bottom margin fade
-- Custom text and background colors, app accent color, light/dark/system theme
-- Save multiple named scripts, or use a quick throwaway script without saving
-- Export and import settings as JSON
-- Fully customizable keyboard shortcuts
-- Keeps the screen awake during playback
-- Available in English, German, Simplified Chinese (incomplete), Russian, and Pirate English (the most important language)
+Получилось, если суфлёр открылся без адресной строки. После первого запуска он работает и без интернета.
 
-## Download
+### Android
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/io.github.tiefseetauchner.tiefprompt/)
+1. Откройте [последний релиз](https://github.com/saint4ai/onai-teleprompter-app/releases/latest) и скачайте файл `.apk`.
+2. Откройте скачанный файл. Телефон спросит, можно ли ставить приложения из браузера, — разрешите.
+3. Если Play Защита предупредит о неизвестном приложении, нажмите «Всё равно установить».
 
-Or download the latest APK from the [Releases Section](https://github.com/Tiefseetauchner/tiefprompt/releases/latest). Also available on [the Apple App Store](https://apps.apple.com/us/app/tiefprompt/id6749463142)!
+Нужен Android 7 или новее. Новая версия ставится поверх старой, сценарии сохраняются.
 
-## Build
+## Пульт
 
-The `tools/build.sh` script is the easiest way to build the application.
+Подключите пульт в настройках Bluetooth телефона, как наушники. Отдельное приложение для пульта не нужно.
 
-```bash
-Build TiefPrompt packages.
-usage: build.sh [options]
+| Кнопка | Что делает |
+|---|---|
+| Центральная, Enter или пробел | Старт и пауза |
+| ← и → | Медленнее и быстрее. Текст не останавливается |
+| ↑ и ↓, короткое нажатие | Шаг назад и вперёд, показ продолжается |
+| ↑ и ↓, удержание | Быстрая прокрутка, через 3 секунды ещё быстрее. Отпустили — текст едет дальше с прежней скоростью |
 
--t target   Comma seperated list of targets to build. Options:
-            linux,windows,androidaab,androidapk,macos,iosapp,iosipa
-            (i) Can be set via environment variable 'TARGETS'
-            (!) Required
--f freedom  Freedom level to apply to Application. Options:
-            freemium,foss
-            (i) Can be set via environment variable 'FREEDOM'
-            (!) Required
--b dir      Build directory to place packages in.
-            Default: /package
-            (i) Unix path - not interpreted relatively!
-            (i) Can be set via environment variable 'BUILD_DIR'
--s          Skip Flutter preperation.
--d          Run debug build.
--c          Continue on fail.
--q          Make script quiet.
--v          Make script verbose.
--V          Make script extremely verbose (careful here!).
--h          Show this help.
-```
+Если кнопка не срабатывает: «Настройки» → «Настройки горячих клавиш» → нужное действие → «Добавить привязку» → нажмите кнопку на пульте.
 
-For example, to build linux and android APKs, run `./tools/build.sh -t linux,androidapk -f foss`.
+## Стеклянный суфлёр
 
-Foss vs Freemium decides, which entrypoint is used. See the [Fossium](#fossium) section.
+Камера снимает через стекло, а текст отражается в нём задом наперёд. Чтобы он читался, включите отражение: «Настройки» → «Настройки отображения» → «Перевернуть по X по умолчанию».
 
-You can still run the app using `.flutter/bin/flutter run`, which will launch the fallback main.dart.
+## Если что-то не так
 
-Note that, if you're building for windows, you will need a bash. I recommend the git bash, normally located under `C:\Program Files\Git\bin\bash.exe` to run `build.sh`.
+- **Не появляется клавиатура.** Пока пульт подключён, телефон считает его клавиатурой. Вставьте текст до подключения пульта или выключите пульт на время правки.
+- **iPhone не видит кнопку пульта в окне назначения.** Значит, кнопка шлёт громкость или команды плеера, а их iPhone не передаёт веб-приложениям. Если у пульта есть переключатель режимов, смените режим.
+- **iPhone: экран гаснет во время показа.** На время съёмки: «Настройки» → «Экран и яркость» → «Автоблокировка» → «Никогда».
+- **iPhone: пропали сценарии.** У Safari и у иконки на экране «Домой» раздельная память. Открывайте суфлёр всегда с иконки.
 
-## Fossium
+## Приватность
 
-This application is sadly not only an extreme time-, but also money sink for me. That's why I decided to make the application freemium when downloaded from the Apple App Store or Google Play.
+Нет аккаунтов, аналитики и рекламы. Сценарии не покидают телефон. Android-версия не запрашивает доступ в интернет. Веб-версия загружается с GitHub Pages, а потом работает без сети.
 
-This does not, however, affect F-Droid or my uploaded builds - these remain free as in beer. That's why I split the application in a `main_foss.dart` and a `main_freemium.dart` entrypoint. The different versions can be built using the build script, or just with `.flutter/bin/flutter build [target] -t main_[freedom].dart`.
+## Для разработчика
 
-There's an unvalidated iOS build available, I have no idea whether it works but if it does, yippie!
-
-## Translations
-
-We use hosted weblate (at this time at least) to translate the application.
-Feel free to help out! [Join the project](https://hosted.weblate.org/projects/tiefprompt)!
-
-When adding a new language, don't forget to add it to the lib/core/constants.dart kSupportedLocales
-list.
-
-## License
-
-MIT. Look at [LICENSE](LICENSE) for details.
-
-## Contributing
-
-Be nice please?
-
-## Coffee
-
-I need more coffee. Please.
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tiefseetauchner)
+- Основа — [TiefPrompt](https://github.com/Tiefseetauchner/tiefprompt) (MIT, © Lena Tauchner). Доработки onAI — в ветке `onai`.
+- Точка входа — `lib/main_foss.dart`. Flutter закреплён подмодулем `.flutter`.
+- Сборки — GitHub Actions: `onai-apk.yml` собирает APK и гоняет тесты, `onai-web.yml` собирает веб-версию и публикует её на Pages.
+- APK из CI подписан одноразовым ключом. В релиз идёт файл, переподписанный ключом onAI, — иначе обновление не встанет поверх.
+- Локально: `.flutter/bin/flutter test`, `.flutter/bin/flutter build web -t lib/main_foss.dart --no-web-resources-cdn`.

@@ -6,6 +6,8 @@
 
 Без регистрации и рекламы. Сценарии хранятся только в вашем телефоне.
 
+Страница суфлёра: **https://onai.academy/suflyor/**
+
 ## Установка
 
 ### iPhone
@@ -19,7 +21,7 @@
 
 ### Android
 
-1. Откройте [последний релиз](https://github.com/saint4ai/onai-teleprompter-app/releases/latest) и скачайте файл `.apk`.
+1. Скачайте [onai-suflyor-android.apk](https://github.com/saint4ai/onai-teleprompter-app/releases/latest/download/onai-suflyor-android.apk) — последняя версия.
 2. Откройте скачанный файл. Телефон спросит, можно ли ставить приложения из браузера, — разрешите.
 3. Если Play Защита предупредит о неизвестном приложении, нажмите «Всё равно установить».
 
@@ -59,4 +61,5 @@
 - Точка входа — `lib/main_foss.dart`. Flutter закреплён подмодулем `.flutter`.
 - Сборки — GitHub Actions: `onai-apk.yml` собирает APK и гоняет тесты, `onai-web.yml` собирает веб-версию и публикует её на Pages.
 - APK из CI подписан одноразовым ключом. В релиз идёт файл, переподписанный ключом onAI, — иначе обновление не встанет поверх.
+- В каждый релиз загружайте копию APK под именем `onai-suflyor-android.apk`: на неё ведут лендинг onai.academy/suflyor и README.
 - Локально: `.flutter/bin/flutter test`, `.flutter/bin/flutter build web -t lib/main_foss.dart --no-web-resources-cdn`.

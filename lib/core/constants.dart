@@ -11,6 +11,9 @@ const double kPrompterMaxSpeed = 20.0;
 const double kPrompterMinFontSize = 12.0;
 const double kPrompterMaxFontSize = 420.0;
 
+// onAI: шрифт по умолчанию — Golos Text (кириллица в основе, читается через стекло суфлёра).
+const String kDefaultFontFamily = 'Golos Text';
+
 // onAI: удержание стрелки во время показа. Клик сдвигает текст, как раньше; удержание дольше
 // kHoldScrollDelay включает быструю прокрутку, после kHoldScrollFastAfter — ещё быстрее
 // (переход плавный, за kHoldScrollRamp). Отпустил — показ идёт дальше с прежней скоростью.
@@ -56,6 +59,97 @@ const TalkerRiverpodLoggerSettings kTalkerRiverpodObserverSettings =
 const int kSettingsSchemaVersion = 1;
 
 final List<TiefPromptFontsFile> kAvailableFonts = [
+  // onAI: шрифты с хорошей кириллицей (SIL OFL), Golos Text — по умолчанию.
+  TiefPromptFontsFile(
+    name: "Golos Text",
+    isBuiltIn: true,
+    variants: [
+      TiefPromptFontsVariant(
+        weight: 500,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/GolosText-Medium.ttf"),
+      ),
+      TiefPromptFontsVariant(
+        weight: 700,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/GolosText-Bold.ttf"),
+      ),
+    ],
+  ),
+  TiefPromptFontsFile(
+    name: "Manrope",
+    isBuiltIn: true,
+    variants: [
+      TiefPromptFontsVariant(
+        weight: 600,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Manrope-SemiBold.ttf"),
+      ),
+      TiefPromptFontsVariant(
+        weight: 800,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Manrope-ExtraBold.ttf"),
+      ),
+    ],
+  ),
+  TiefPromptFontsFile(
+    name: "Onest",
+    isBuiltIn: true,
+    variants: [
+      TiefPromptFontsVariant(
+        weight: 500,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Onest-Medium.ttf"),
+      ),
+      TiefPromptFontsVariant(
+        weight: 700,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Onest-Bold.ttf"),
+      ),
+    ],
+  ),
+  TiefPromptFontsFile(
+    name: "PT Sans",
+    isBuiltIn: true,
+    variants: [
+      TiefPromptFontsVariant(
+        weight: 400,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/PTSans-Regular.ttf"),
+      ),
+      TiefPromptFontsVariant(
+        weight: 700,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/PTSans-Bold.ttf"),
+      ),
+    ],
+  ),
+  TiefPromptFontsFile(
+    name: "Montserrat",
+    isBuiltIn: true,
+    variants: [
+      TiefPromptFontsVariant(
+        weight: 500,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Montserrat-Medium.ttf"),
+      ),
+      TiefPromptFontsVariant(
+        weight: 700,
+        fontStyle: FontStyle.normal,
+        load: () async =>
+            await rootBundle.load("assets/fonts/Montserrat-Bold.ttf"),
+      ),
+    ],
+  ),
   TiefPromptFontsFile(
     name: "Roboto",
     isBuiltIn: true,
@@ -301,7 +395,6 @@ final KeybindingMap kDefaultKeybindings = KeybindingMap(
       KeybindingAction.speedUp,
       Keybinding(keyId: LogicalKeyboardKey.arrowRight.keyId),
     ),
-
 
     (
       KeybindingAction.scrollUpSmall,

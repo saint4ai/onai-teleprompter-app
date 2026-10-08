@@ -64,6 +64,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         'assets/licenses/robotoSlabLicense.txt',
       );
       yield LicenseEntryWithLineBreaks(['roboto slab'], robotoSlabLicense);
+      // onAI: встроенные шрифты с кириллицей
+      for (final (name, file) in [
+        ('Golos Text', 'golosTextLicense'),
+        ('Manrope', 'manropeLicense'),
+        ('Onest', 'onestLicense'),
+        ('PT Sans', 'ptSansLicense'),
+        ('Montserrat', 'montserratLicense'),
+      ]) {
+        yield LicenseEntryWithLineBreaks([
+          name,
+        ], await rootBundle.loadString('assets/licenses/$file.txt'));
+      }
     });
 
     _runStartupChecks();

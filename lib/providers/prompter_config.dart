@@ -18,7 +18,7 @@ abstract class PrompterConfiguration with _$PrompterConfiguration {
     @Default(false) bool mirroredY,
     @Default(42.0) double fontSize,
     @Default(0.0) double sideMargin,
-    @Default('Roboto') String fontFamily,
+    @Default(kDefaultFontFamily) String fontFamily,
     @TextAlignConverter() @Default(TextAlign.left) TextAlign alignment,
     @Default(false) bool displayReadingIndicatorBoxes,
     @Default(60.0) double readingIndicatorBoxesHeight,

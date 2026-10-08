@@ -253,7 +253,7 @@ class Settings extends _$Settings implements ISettings {
         mirroredY: _prefs.getBool('mirror_text_y') ?? false,
         fontSize: _prefs.getDouble('font_size') ?? 42.0,
         sideMargin: _prefs.getDouble('side_margin') ?? 0.0,
-        fontFamily: _prefs.getString('font_family') ?? 'Roboto',
+        fontFamily: _prefs.getString('font_family') ?? kDefaultFontFamily,
         alignment: const TextAlignConverter().fromJson(
           _prefs.getString('alignment') ?? '',
         ),

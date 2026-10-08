@@ -363,7 +363,7 @@ class _FontSettingsDialog extends ConsumerWidget {
                               .toList(),
                           onChanged: (value) => ref
                               .read(prompterProvider.notifier)
-                              .setFontFamily(value ?? 'Roboto'),
+                              .setFontFamily(value ?? kDefaultFontFamily),
                         ),
                       ],
                     ),

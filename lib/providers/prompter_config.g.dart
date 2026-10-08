@@ -14,7 +14,7 @@ _PrompterConfiguration _$PrompterConfigurationFromJson(
   mirroredY: json['mirroredY'] as bool? ?? false,
   fontSize: (json['fontSize'] as num?)?.toDouble() ?? 42.0,
   sideMargin: (json['sideMargin'] as num?)?.toDouble() ?? 0.0,
-  fontFamily: json['fontFamily'] as String? ?? 'Roboto',
+  fontFamily: json['fontFamily'] as String? ?? kDefaultFontFamily,
   alignment: json['alignment'] == null
       ? TextAlign.left
       : const TextAlignConverter().fromJson(json['alignment'] as String),

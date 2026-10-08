@@ -20,6 +20,10 @@ final _userScrollingProvider = NotifierProvider<_UserScrolling, bool>(
 class ScrollableTextController {
   final ScrollController scrollController;
 
+  /// onAI: пока держат стрелку, автопрокрутка не двигает текст — его ведёт
+  /// быстрая прокрутка с экрана суфлёра. Отпустили — автопрокрутка продолжает.
+  bool holdActive = false;
+
   ScrollableTextController({double initialScrollOffset = 0.0})
     : scrollController = ScrollController(
         initialScrollOffset: initialScrollOffset,
@@ -31,6 +35,20 @@ class ScrollableTextController {
 
   void jumpRelative(double offset) {
     scrollController.jumpTo(scrollController.offset + offset);
+  }
+
+  /// onAI: сдвиг без выхода за начало и конец текста — для быстрой прокрутки.
+  void jumpRelativeClamped(double offset) {
+    if (!scrollController.hasClients) {
+      return;
+    }
+    final position = scrollController.position;
+    scrollController.jumpTo(
+      (position.pixels + offset).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+    );
   }
 
   void dispose() {
@@ -175,7 +193,9 @@ class _ScrollableTextState extends ConsumerState<ScrollableText>
     final calculatedScrollOffset =
         _getScrollOffsetInLinesPerSecond(_scrollSpeed) * deltaSeconds;
 
-    if (widget.controller.scrollController.hasClients && !isUserScrolling) {
+    if (widget.controller.scrollController.hasClients &&
+        !isUserScrolling &&
+        !widget.controller.holdActive) {
       if (widget.controller.scrollController.position.pixels +
               calculatedScrollOffset >=
           widget.controller.scrollController.position.maxScrollExtent) {

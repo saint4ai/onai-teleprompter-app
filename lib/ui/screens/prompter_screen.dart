@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiefprompt/core/constants.dart';
 import 'package:tiefprompt/core/control_buttons.dart';
 import 'package:tiefprompt/core/debouncer.dart';
+import 'package:tiefprompt/core/hold_scroll.dart';
 import 'package:tiefprompt/models/keybinding.dart';
 import 'package:tiefprompt/providers/feature_provider.dart';
 import 'package:tiefprompt/providers/keybinding_provider.dart';
@@ -38,15 +40,23 @@ class PrompterScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _PrompterScreenState();
 }
 
-class _PrompterScreenState extends ConsumerState<PrompterScreen> {
+class _PrompterScreenState extends ConsumerState<PrompterScreen>
+    with SingleTickerProviderStateMixin {
   final _focusNode = FocusNode();
   late final ScrollableTextController _scrollableTextController;
   late final Debouncer _scrollableTextControllerSaveDebouncer;
+
+  // onAI: быстрая прокрутка, пока держат стрелку вверх/вниз.
+  late final Ticker _holdTicker;
+  LogicalKeyboardKey? _holdKey;
+  int _holdDirection = 0;
+  Duration _lastHoldElapsed = Duration.zero;
 
   @override
   void initState() {
     super.initState();
     _scrollableTextController = ScrollableTextController();
+    _holdTicker = createTicker(_onHoldTick);
     _scrollableTextControllerSaveDebouncer = PeriodicRunDebouncer(
       delay: Duration(seconds: 1),
       periodicDelay: Duration(seconds: 5),
@@ -91,14 +101,8 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen> {
       ),
     );
 
-    return KeyboardListener(
-      onKeyEvent: (keyEvent) {
-        if (keyEvent is KeyDownEvent) {
-          _runEventAction(
-            ref.read(keybindingsProvider.notifier).actionForEvent(keyEvent),
-          );
-        }
-      },
+    return Focus(
+      onKeyEvent: _onKeyEvent,
       focusNode: _focusNode,
       autofocus: true,
       child: Scaffold(
@@ -170,20 +174,104 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen> {
       overlays: SystemUiOverlay.values,
     );
     WakelockPlus.disable();
+    _holdTicker.dispose();
     _focusNode.dispose();
     _scrollableTextController.dispose();
     _scrollableTextControllerSaveDebouncer.dispose();
     super.dispose();
   }
 
-  Future<void> _runEventAction(
-    Future<List<KeybindingAction>> actionForEvent,
-  ) async {
+  // onAI: назначенные клавиши помечаются обработанными — система не уводит фокус
+  // стрелками и не нажимает кнопки панели. Клик ↑/↓ сдвигает текст сразу,
+  // удержание включает быструю прокрутку, отпускание возвращает обычный показ.
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) {
+      if (event.logicalKey == _holdKey) {
+        _stopHold();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    final actions = ref
+        .read(keybindingsProvider.notifier)
+        .actionsForEvent(event);
+    if (actions.isEmpty) {
+      return KeyEventResult.ignored;
+    }
+
+    // Автоповтор при удержании не повторяет действие: прокрутку ведёт таймер удержания,
+    // а пауза и скорость меняются только по нажатию.
+    if (event is KeyRepeatEvent) {
+      return KeyEventResult.handled;
+    }
+
+    _runActions(actions);
+
+    final direction = _holdDirectionFor(actions);
+    if (direction != 0 && _isFeatureEnabled(Feature.keybindings)) {
+      _startHold(event.logicalKey, direction);
+    }
+    return KeyEventResult.handled;
+  }
+
+  int _holdDirectionFor(List<KeybindingAction> actions) {
+    if (actions.contains(KeybindingAction.scrollUp)) {
+      return -1;
+    }
+    if (actions.contains(KeybindingAction.scrollDown)) {
+      return 1;
+    }
+    return 0;
+  }
+
+  void _startHold(LogicalKeyboardKey key, int direction) {
+    _stopHold();
+    _holdKey = key;
+    _holdDirection = direction;
+    _lastHoldElapsed = Duration.zero;
+    _holdTicker.start();
+  }
+
+  void _stopHold() {
+    if (_holdTicker.isActive) {
+      _holdTicker.stop();
+    }
+    _holdKey = null;
+    _holdDirection = 0;
+    _scrollableTextController.holdActive = false;
+  }
+
+  void _onHoldTick(Duration elapsed) {
+    final linesPerSecond = holdScrollLinesPerSecond(elapsed);
+    final deltaSeconds =
+        (elapsed - _lastHoldElapsed).inMicroseconds /
+        Duration.microsecondsPerSecond;
+    _lastHoldElapsed = elapsed;
+
+    if (linesPerSecond == 0) {
+      return;
+    }
+
+    _scrollableTextController.holdActive = true;
+    // Высота строки — как у автопрокрутки: размер шрифта × 1.0.
+    final lineHeight = ref.read(prompterProvider).config.fontSize;
+    _scrollableTextController.jumpRelativeClamped(
+      _holdDirection * linesPerSecond * lineHeight * deltaSeconds,
+    );
+  }
+
+  bool _isFeatureEnabled(Feature feature) => ref
+      .read(featuresProvider)
+      .features
+      .contains(feature);
+
+  void _runActions(List<KeybindingAction> actions) {
     if (!context.mounted) {
       throw StateError("Context not available.");
     }
 
-    for (final action in await actionForEvent) {
+    for (final action in actions) {
       switch (action) {
         case KeybindingAction.playPause:
           _gatedKeybinding(

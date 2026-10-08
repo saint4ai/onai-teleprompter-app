@@ -92,8 +92,14 @@ class Keybindings extends _$Keybindings {
     );
   }
 
-  Future<List<KeybindingAction>> actionForEvent(KeyEvent event) async {
-    final keybindingMap = state.value ?? await future;
+  /// onAI: синхронный поиск — экран суфлёра должен сразу ответить системе,
+  /// обработана ли клавиша (иначе стрелки уводят фокус на кнопки панели).
+  /// Пока привязки не загружены, возвращает пустой список.
+  List<KeybindingAction> actionsForEvent(KeyEvent event) {
+    final keybindingMap = state.value;
+    if (keybindingMap == null) {
+      return const [];
+    }
     final keyId = event.logicalKey.keyId;
     final hardwareKeyboard = HardwareKeyboard.instance;
     final ctrl = hardwareKeyboard.isControlPressed;
@@ -132,7 +138,7 @@ class Keybindings extends _$Keybindings {
     state = state.whenData(
       (s) => s.copyWith(
         keybindings: s.keybindings
-            .where((b) => b.$1 != action && b.$2 != keybinding)
+            .where((b) => !(b.$1 == action && b.$2 == keybinding))
             .toList(),
       ),
     );
@@ -153,6 +159,16 @@ class Keybindings extends _$Keybindings {
     Keybinding keybinding,
   ) async {
     ref.read(talkerProvider).info('Keybinding added: action=${action.name}');
+
+    // onAI: одна кнопка — одно действие. Назначили кнопку пульта на новое действие —
+    // снимаем её с прежнего, иначе срабатывало первое совпадение и новое молча не работало.
+    final takenBy = (state.value?.keybindings ?? const [])
+        .where((b) => b.$2 == keybinding && b.$1 != action)
+        .toList();
+    for (final (otherAction, otherBinding) in takenBy) {
+      await removeBinding(otherAction, otherBinding);
+    }
+
     final keybindingsMapId = (await ref.read(
       settingsProvider.future,
     )).keybindingsMapId;

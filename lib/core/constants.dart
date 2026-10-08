@@ -11,6 +11,15 @@ const double kPrompterMaxSpeed = 20.0;
 const double kPrompterMinFontSize = 12.0;
 const double kPrompterMaxFontSize = 420.0;
 
+// onAI: удержание стрелки во время показа. Клик сдвигает текст, как раньше; удержание дольше
+// kHoldScrollDelay включает быструю прокрутку, после kHoldScrollFastAfter — ещё быстрее
+// (переход плавный, за kHoldScrollRamp). Отпустил — показ идёт дальше с прежней скоростью.
+const Duration kHoldScrollDelay = Duration(milliseconds: 300);
+const Duration kHoldScrollFastAfter = Duration(seconds: 3);
+const Duration kHoldScrollRamp = Duration(milliseconds: 500);
+const double kHoldScrollSlowLinesPerSecond = 5.0;
+const double kHoldScrollFastLinesPerSecond = 15.0;
+
 const double kPrompterMinSideMargin = 0.0;
 const double kPrompterMaxSideMargin = 99.0;
 
@@ -274,6 +283,25 @@ final KeybindingMap kDefaultKeybindings = KeybindingMap(
       KeybindingAction.playPause,
       Keybinding(keyId: LogicalKeyboardKey.space.keyId),
     ),
+    // onAI: пульт суфлёра — центр и медиа-кнопка запускают и ставят на паузу,
+    // влево/вправо меняют скорость на ходу.
+    (
+      KeybindingAction.playPause,
+      Keybinding(keyId: LogicalKeyboardKey.select.keyId),
+    ),
+    (
+      KeybindingAction.playPause,
+      Keybinding(keyId: LogicalKeyboardKey.mediaPlayPause.keyId),
+    ),
+    (
+      KeybindingAction.speedDown,
+      Keybinding(keyId: LogicalKeyboardKey.arrowLeft.keyId),
+    ),
+    (
+      KeybindingAction.speedUp,
+      Keybinding(keyId: LogicalKeyboardKey.arrowRight.keyId),
+    ),
+
 
     (
       KeybindingAction.scrollUpSmall,

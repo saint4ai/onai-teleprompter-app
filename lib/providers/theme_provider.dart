@@ -98,7 +98,7 @@ ThemeData createCustomTheme({
     useMaterial3: true,
     brightness: brightness,
     colorScheme: scheme,
-    fontFamily: 'Exo',
+    fontFamily: kDefaultFontFamily, // onAI: в Exo нет кириллицы
     scaffoldBackgroundColor: background,
     canvasColor: background,
   );

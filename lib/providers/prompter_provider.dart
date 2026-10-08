@@ -33,6 +33,27 @@ class Prompter extends _$Prompter {
     state = state.copyWith(config: settings.config);
   }
 
+  /// onAI: правка настроек во время показа меняет только то, что поменяли.
+  /// Скорость с пульта и зеркало, включённое в суфлёре, не сбрасываются.
+  void applySettingsChange(SettingsState? previous, SettingsState next) {
+    if (previous == null) {
+      applySettings(next);
+      return;
+    }
+    final before = previous.config.toJson();
+    final changed = next.config.toJson()
+      ..removeWhere((key, value) => before[key] == value);
+    if (changed.isEmpty) {
+      return;
+    }
+    state = state.copyWith(
+      config: PrompterConfiguration.fromJson({
+        ...state.config.toJson(),
+        ...changed,
+      }),
+    );
+  }
+
   void _mutateConfig(
     PrompterConfiguration Function(PrompterConfiguration config) update,
   ) {

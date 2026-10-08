@@ -103,7 +103,9 @@ class _PrompterScreenState extends ConsumerState<PrompterScreen>
 
     ref.listen(settingsProvider, (previous, next) async {
       next.whenData((data) {
-        ref.read(prompterProvider.notifier).applySettings(data);
+        ref
+            .read(prompterProvider.notifier)
+            .applySettingsChange(previous?.value, data);
       });
     });
 

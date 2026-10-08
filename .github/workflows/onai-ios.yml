@@ -1,0 +1,44 @@
+# onAI: родное приложение для iPhone. Пока без подписи — проверяем, что проект
+# собирается под iOS. Подпись и отправка в TestFlight добавятся, когда появится
+# аккаунт Apple Developer (ключ App Store Connect — в секретах репозитория).
+name: onAI iOS
+
+on:
+  push:
+    branches:
+      - onai
+  workflow_dispatch:
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - name: Подмодуль Flutter по HTTPS
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Подмодуль приходит без тегов — см. onai-apk.yml.
+      - name: Версия Flutter из тега подмодуля
+        run: |
+          sha=$(git -C .flutter rev-parse HEAD)
+          tag=$(git -C .flutter ls-remote --tags origin | grep "^$sha" | grep -v '\^{}' | head -1 | sed 's#.*refs/tags/##')
+          git -C .flutter fetch --depth 1 origin "refs/tags/$tag:refs/tags/$tag"
+          echo "Flutter $tag ($sha)"
+
+      - name: Зависимости
+        run: |
+          .flutter/bin/flutter --disable-analytics
+          .flutter/bin/flutter pub get
+
+      - name: Сборка без подписи
+        run: .flutter/bin/flutter build ios --release --no-codesign -t lib/main_foss.dart
+
+      - name: Что внутри
+        run: |
+          app=build/ios/iphoneos/Runner.app
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleDisplayName" -c "Print :CFBundleShortVersionString" "$app/Info.plist"
+          du -sh "$app"

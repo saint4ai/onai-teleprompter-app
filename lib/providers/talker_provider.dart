@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -11,6 +12,13 @@ final talkerProvider = Provider<Talker>((ref) {
 });
 
 Future<Talker> createTalker() async {
+  // onAI: в браузере нет файлов — журнал только в памяти.
+  if (kIsWeb) {
+    return TalkerFlutter.init(
+      settings: TalkerSettings(useHistory: true, maxHistoryItems: 1000),
+    );
+  }
+
   final dir = await getApplicationDocumentsDirectory();
   final logFile = File('${dir.path}/tiefprompt_logs.txt');
 

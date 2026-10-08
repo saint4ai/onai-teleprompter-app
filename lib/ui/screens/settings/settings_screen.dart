@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:tiefprompt/ui/widgets/async_settings_builder.dart';
@@ -21,10 +22,11 @@ class SettingsScreen extends ConsumerWidget {
     final featureKind = ref.watch(featuresProvider).featureKind;
 
     final supportsDynamicColors =
-        Platform.isAndroid ||
-        Platform.isMacOS ||
-        Platform.isWindows ||
-        Platform.isLinux;
+        !kIsWeb &&
+        (Platform.isAndroid ||
+            Platform.isMacOS ||
+            Platform.isWindows ||
+            Platform.isLinux);
 
     final title = context.tr("SettingsScreen.title");
 

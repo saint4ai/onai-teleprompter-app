@@ -39,6 +39,12 @@ class AppDatabase extends $AppDatabase {
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
       ),
+      // onAI: веб-версия для iPhone. Файлы лежат в web/, версии — из релиза
+      // drift-2.35.0 (под drift 2.35.0 и sqlite3 3.6.0 из pubspec.lock).
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.js'),
+      ),
     );
   }
 

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,9 +35,9 @@ class OpenFileScreen extends ConsumerWidget {
                         allowedExtensions: ['txt', 'md'],
                       );
                       if (result != null) {
-                        final fileContent = await File(
-                          result.path!,
-                        ).readAsString();
+                        final fileContent = utf8.decode(
+                          await result.readAsBytes(),
+                        );
 
                         final newScriptId = await scriptService.saveAsNew(
                           ScriptState(

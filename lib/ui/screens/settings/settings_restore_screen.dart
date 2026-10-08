@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
@@ -540,7 +539,7 @@ class _ImportSettingsDialog extends ConsumerWidget {
     }
 
     try {
-      final fileContent = await File(resultFile.path!).readAsString();
+      final fileContent = utf8.decode(await resultFile.readAsBytes());
       final jsonContent = jsonDecode(fileContent);
 
       if (jsonContent['schemaVersion'] != kSettingsSchemaVersion) {

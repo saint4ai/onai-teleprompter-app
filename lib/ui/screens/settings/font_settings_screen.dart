@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -182,20 +180,14 @@ class FontSettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<List<File>> _selectFontFiles() async {
-    final result = await FilePicker.pickFiles(
+  Future<List<PlatformFile>> _selectFontFiles() {
+    return FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['ttf', 'otf'],
     );
-
-    if (result.isEmpty) {
-      return [];
-    }
-
-    return result.nonNulls.map((file) => File(file.path!)).toList();
   }
 
-  Future<TiefPromptFontsFile> _createFontFile(File fontFile) async {
+  Future<TiefPromptFontsFile> _createFontFile(PlatformFile fontFile) async {
     final fileContent = await fontFile.readAsBytes();
     final fontInfo = extractFontInfo(fileContent);
 
@@ -203,16 +195,13 @@ class FontSettingsScreen extends ConsumerWidget {
       weight: fontInfo.weight,
       fontStyle: fontInfo.isItalic ? FontStyle.italic : FontStyle.normal,
       load: () async => ByteData.view(fileContent.buffer),
-      originalFileName: fontFile.path.split('/').last,
+      originalFileName: fontFile.name,
     );
 
     return TiefPromptFontsFile(
       name:
           fontInfo.familyName ??
-          fontFile.path
-              .split('/')
-              .last
-              .substring(0, fontFile.path.lastIndexOf('.')),
+          fontFile.name.substring(0, fontFile.name.lastIndexOf('.')),
       variants: [fontVariant],
     );
   }

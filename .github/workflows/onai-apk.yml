@@ -1,0 +1,54 @@
+# onAI: проверка и сборка APK для телефона (arm64). На Mac владельца мало места —
+# собираем здесь. APK подписан одноразовым ключом CI; боевую подпись ставим локально
+# через apksigner, ключ onAI из репозитория не уходит.
+name: onAI APK
+
+on:
+  push:
+    branches:
+      - onai
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Подмодуль Flutter по HTTPS
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Зависимости
+        run: |
+          .flutter/bin/flutter --disable-analytics
+          .flutter/bin/flutter pub get
+
+      - name: Тесты
+        run: .flutter/bin/flutter test
+
+      - name: Одноразовый ключ подписи CI
+        run: |
+          keytool -genkeypair -keystore "$RUNNER_TEMP/ci.keystore" -storetype PKCS12 \
+            -alias ci -keyalg RSA -keysize 2048 -validity 1 \
+            -storepass ci-temp-pass -keypass ci-temp-pass -dname "CN=CI"
+          printf 'storePassword=ci-temp-pass\nkeyPassword=ci-temp-pass\nkeyAlias=ci\nstoreFile=%s\n' \
+            "$RUNNER_TEMP/ci.keystore" > android/key.properties
+
+      - name: Сборка APK
+        run: |
+          .flutter/bin/flutter build apk --release --split-per-abi \
+            --target-platform android-arm64 -t lib/main_foss.dart
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: onai-teleprompter-arm64
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 14
